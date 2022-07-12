@@ -1,5 +1,6 @@
 const Screen = require("./screen");
 const Cursor = require("./cursor");
+const ComputerPlayer = require('./computer-player');
 
 class TTT {
 
@@ -30,7 +31,7 @@ class TTT {
   }
 
   static turnMessage() {
-    Screen.setMessage(`It is ${this.playerTurn}'s turn`)
+    Screen.setMessage(`You are playing as ${this.playerTurn}`)
     Screen.render();
   }
 
@@ -47,18 +48,33 @@ class TTT {
         TTT.endGame(winner);
       }
 
-      if (this.playerTurn === 'O') {
-        this.playerTurn = 'X'
-      } else this.playerTurn = 'O';
+      // if (this.playerTurn === 'O') {
+      //   this.playerTurn = 'X'
+      // } else this.playerTurn = 'O';
 
-      TTT.turnMessage.call(this);
+      // TTT.turnMessage.call(this);
       Screen.printCommands();
+
+      TTT.cpuMove();
 
   } else {
       Screen.setMessage(`Spot already taken`);
       Screen.render();
       Screen.printCommands();
     }
+  }
+
+  static cpuMove() {
+    let move = ComputerPlayer.getSmartMove(Screen.grid, 'X');
+
+    Screen.setGrid(move.row, move.col, 'X');
+
+    let winner = TTT.checkWin(Screen.grid);
+    if(winner) { TTT.endGame(winner) }
+
+    // Screen.setMessage ('Your turn now');
+    Screen.render();
+    Screen.printCommands();
   }
 
   static checkRowWin(row) {
